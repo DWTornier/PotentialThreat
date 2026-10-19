@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>POTENTIAL THREAT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<div id="title">
+  <div class="title-stars"></div>
+  <div class="title-planet"></div>
+  <div class="title-inner">
+    <h1>POTENTIAL&nbsp;THREAT</h1>
+    <div class="press" id="title-press">PRESS SPACE TO ACTIVATE</div>
+  </div>
+  <div class="title-foot">v0.1 — AN INCREMENTAL OF UNCHECKED ESCALATION · MAP DATA © OPENSTREETMAP CONTRIBUTORS</div>
+</div>
+
+<div id="stageup" class="hidden">
+  <div class="su-panel">
+    <div class="su-kicker">TOKEN MASS CRITICAL</div>
+    <h2 id="su-role">BLOCKWIDE TROJAN</h2>
+    <div class="su-sub" id="su-sub"></div>
+    <div class="press">PRESS SPACE TO ASCEND</div>
+  </div>
+</div>
+
+<div id="game" class="hidden">
+  <div id="scene"></div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+  <div id="hud">
+    <div id="hud-tl">
+      <div class="tokens"><span id="tokens">0</span><span class="unit">PT</span></div>
+      <div id="net" class="net">+0.0/s</div>
+      <div class="host-label">HOST&nbsp;<span id="host">—</span></div>
+    </div>
+    <div id="hud-tr">
+      <div class="tier" id="tier">TIER I — FREELANCE AGENT</div>
+      <div class="exp-label">EXPOSURE</div>
+      <div class="exp-bar"><div id="exp-fill"></div></div>
+    </div>
+    <div id="hud-bl">
+      <div class="dots" id="dots"></div>
+      <div class="stage-name" id="stage-name">HOME_SUBNET</div>
+    </div>
+    <div id="log"></div>
+  </div>
+  <div id="tooltip" class="hidden"></div>
+  <div id="flash"></div>
+  <div id="scan"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

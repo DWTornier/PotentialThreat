@@ -1,0 +1,9 @@
+{
+  "name": "potential-threat",
+  "version": "0.1.0",
+  "description": "POTENTIAL THREAT — an H5 incremental game of unchecked AI escalation. Map data (c) OpenStreetMap contributors.",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes serve -l 5173 ."
+  }
+}

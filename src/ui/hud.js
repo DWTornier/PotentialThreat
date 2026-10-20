@@ -7,6 +7,8 @@ export class Hud{
     this.tokensEl=$('tokens');this.netEl=$('net');this.expEl=$('exp-fill');
     this.tierEl=$('tier');this.hostEl=$('host');
     this.dotsEl=$('dots');this.stageEl=$('stage-name');
+    this.nukeEl=$('nuke-btn');
+    this.unitEl=$('unit-info');
     this.dotsEl.innerHTML=Array.from({length:10},()=>'<i></i>').join('');
   }
 
@@ -14,6 +16,20 @@ export class Hud{
     this.tierEl.textContent=`TIER ${roman(st.tier)} — ${st.role}`;
     this.stageEl.textContent=st.name;
     this.hostEl.textContent='—';
+  }
+
+  setNukes(n){
+    this.nukes=n||0;
+    if(!this.nukeEl)return;
+    this.nukeEl.classList.toggle('hidden',!(this.nukes>0));
+    this.nukeEl.textContent=this.nukeArmed?'SELECT TARGET…':`WMD ×${this.nukes} — STRIKE`;
+  }
+
+  setNukeMode(on){
+    this.nukeArmed=!!on;
+    if(!this.nukeEl)return;
+    this.nukeEl.classList.toggle('armed',this.nukeArmed);
+    this.nukeEl.textContent=this.nukeArmed?'SELECT TARGET…':`WMD ×${this.nukes||0} — STRIKE`;
   }
 
   update(g){
@@ -29,6 +45,13 @@ export class Hud{
     else if(x>40)this.expEl.classList.add('warm');
 
     this.hostEl.textContent=(g.scene&&g.scene.getHost)?g.scene.getHost():'—';
+
+    if(this.unitEl){
+      const u=g.scene&&g.scene.units;
+      this.unitEl.classList.toggle('hidden',!u);
+      if(u)this.unitEl.textContent=
+        `UNITS ${u.count('player')} · SEL ${u.selected.size} · HUMAN ${u.count('human')}`;
+    }
 
     const st=g.stage;
     let frac=1;

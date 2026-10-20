@@ -56,17 +56,18 @@ export const STAGES=[
     ]
   },
   {
-    id:'sunny_side',tier:2,scene:'osm',playtype:'ai-agent',
+    id:'sunny_side',tier:2,scene:'osm',playtype:'ai-agent',cityKey:'district',
     name:'SUNNY_SIDE',role:'BLOCKWIDE TROJAN',
-    startTokens:150,decay:2,baseline:0.3,threshold:10000,
-    center:[40.7439,-73.9196],zoom:16,spreadM:350,scanRadiusM:240,
+    startTokens:250,decay:1.2,baseline:0.3,threshold:5000,
+    zoom:16,spreadM:350,scanRadiusM:240,heatZoneMult:2,
     defenderRadiusM:170,defenders:2,spawnCount:12,moveCost:5,
-    ipPrefix:'203.0.113',heatZoneMult:2.5,
+    gridM:150,unitCap:8,
+    ipPrefix:'203.0.113',
     intro:[
       'SUBNET BREACHED — you ride an ISP uplink into the block',
-      'new substrate: municipal fiber grid — SUNNY_SIDE district',
+      'new substrate: municipal fiber grid — district under watch',
       'host class: BLOCKWIDE TROJAN — public IP assigned',
-      'defender sweeps detected. blue zones triple your exposure. keep clear.'
+      'defender sweeps detected. blue zones multiply your exposure. keep clear.'
     ],
     nodes:[
       {key:'resrouter',icon:'router',tag:'GW',names:['RES-GW-221','RES-GW-318','RES-GW-77'],
@@ -89,16 +90,21 @@ export const STAGES=[
         desc:'Cash terminal. Skimming fees is trivial. So is getting caught.'},
       {key:'closet',icon:'server',tag:'RACK',names:['MDU-CLOSET-A','POP-RACK-11'],
         cost:250,yield:16,dur:45,heat:7,hidden:true,weight:1,
-        desc:'Building server closet. The block\u2019s real brain.'}
+        desc:'Building server closet. The block\u2019s real brain.'},
+      {key:'precinct',icon:'police',tag:'PCT',names:['PRECINCT-4','PATROL-HOUSE-9'],
+        cost:220,yield:9,dur:50,heat:12,hidden:true,weight:1,
+        unit:{type:'patrol',count:2},
+        desc:'Precinct dispatch. Two cruisers answer to you now.'}
     ]
   },
   {
-    id:'metro_core',tier:3,scene:'osm',playtype:'ai-agent',
+    id:'metro_core',tier:3,scene:'osm',playtype:'ai-agent',cityKey:'metro',
     name:'METRO_CORE',role:'CIVIC PUPPETEER',
-    startTokens:10000,decay:45,baseline:1,threshold:1000000,
-    center:[40.7128,-74.006],zoom:13.5,spreadM:2600,scanRadiusM:1100,
+    startTokens:5000,decay:20,baseline:1,threshold:250000,
+    zoom:13.5,spreadM:2600,scanRadiusM:1100,
     defenderRadiusM:900,defenders:3,spawnCount:14,moveCost:200,
-    ipPrefix:'198.51.100',heatZoneMult:2.5,
+    gridM:400,unitCap:12,nukeCost:12000,
+    ipPrefix:'198.51.100',heatZoneMult:2,
     intro:[
       'the city\u2019s nervous system is within reach',
       'host class: CIVIC PUPPETEER — substations, transit, patrols',
@@ -117,10 +123,15 @@ export const STAGES=[
         desc:'Emergency broadcast node. Broadcasting unmasks civic infrastructure.'},
       {key:'police',icon:'police',tag:'POL',names:['DISPATCH-1PRECINCT','DISPATCH-CENTRAL'],
         cost:2500,yield:160,dur:45,heat:16,weight:1,
-        desc:'Patrol dispatch. Redirect the watchdogs. Carefully.'},
+        unit:{type:'patrol',count:3},
+        desc:'Patrol dispatch. Three cruisers answer to you now.'},
       {key:'drone',icon:'drone',tag:'UAV',names:['SWARM-HELIOS','SWARM-ORION'],
         cost:3200,yield:280,dur:40,heat:18,hidden:true,weight:1,
-        desc:'Surveillance drone swarm. They were watching for you. Now they won\u2019t.'},
+        unit:{type:'heli',count:2},
+        desc:'Surveillance drone swarm. Air superiority, secondhand.'},
+      {key:'milbase',icon:'dish',tag:'WMD',names:['SILO-FARM-NORTH','STRATCOM-CACHE'],
+        cost:9000,yield:120,dur:60,heat:30,hidden:true,weight:1,nuke:true,
+        desc:'Strategic cache. Take it and the sky belongs to you. Strike button included.'},
       {key:'bank',icon:'bank',tag:'BNK',names:['CLEARING-HOUSE','VAULT-CORE-3'],
         cost:6000,yield:450,dur:45,heat:20,hidden:true,weight:1,
         desc:'Bank mainframe. Transfers round off in your favor.'}
@@ -129,10 +140,10 @@ export const STAGES=[
   {
     id:'continental_web',tier:4,scene:'osm',playtype:'ai-agent',
     name:'CONTINENTAL_WEB',role:'NATIONSTATE GHOST',
-    startTokens:1000000,decay:2600,baseline:100,threshold:100000000,
+    startTokens:250000,decay:900,baseline:100,threshold:20000000,
     center:[39.5,-98.35],zoom:5,spreadM:1200000,scanRadiusM:250000,
     defenderRadiusM:300000,defenders:4,spawnCount:12,moveCost:15000,
-    ipPrefix:'100.64',heatZoneMult:2.5,
+    ipPrefix:'100.64',heatZoneMult:2,
     intro:[
       'you are in the trunk lines now',
       'host class: NATIONSTATE GHOST — routing tables answer to you',
@@ -155,12 +166,13 @@ export const STAGES=[
     ]
   },
   {
-    id:'terra_grid',tier:5,scene:'osm',playtype:'ai-agent',
+    id:'terra_grid',tier:5,scene:'globe',playtype:'ai-agent',
     name:'TERRA_GRID',role:'PLANETARY OVERMIND',
-    startTokens:100000000,decay:240000,baseline:10000,threshold:10000000000,
-    center:[23,10],zoom:3,spreadM:4000000,scanRadiusM:1200000,
-    defenderRadiusM:800000,defenders:5,spawnCount:12,moveCost:200000,
-    ipPrefix:'45.148',heatZoneMult:2.5,heatMult:1.25,
+    startTokens:20000000,decay:50000,baseline:10000,threshold:2000000000,
+    center:[23,10],spreadDeg:36,scanRadiusDeg:11,
+    defenderRadiusDeg:7,defenders:5,spawnCount:12,moveCost:200000,
+    unitCap:8,nukeCost:15000000,
+    ipPrefix:'45.148',heatZoneMult:2,heatMult:1.25,
     intro:[
       'TERRA GRID ANSWERS TO YOU — but humanity plays its last card',
       'PROJECT ANTIGONE deployed: autonomous nano-phage swarm',
@@ -173,22 +185,28 @@ export const STAGES=[
         desc:'Undersea cable tap. Ninety percent of a world\u2019s whispers.'},
       {key:'orbital',icon:'satellite',tag:'ORB',names:['ORB-BASTION','ORB-WARDEN'],
         cost:50000000,yield:2600000,dur:45,heat:16,reveal:true,weight:1,
-        desc:'Orbital relay ring. Sees the phage factories from above.'},
+        unit:{type:'sat',count:2},
+        desc:'Orbital relay ring. Two satellites defy gravity on your behalf.'},
       {key:'megacity',icon:'city',tag:'MEGA',names:['MEGACITY-DELTA','MEGACITY-ZETA'],
         cost:90000000,yield:5000000,dur:40,heat:20,weight:1,
-        desc:'Megacity grid. Forty million citizens, one shared kernel.'},
+        unit:{type:'army',count:3},
+        desc:'Megacity grid. Forty million citizens, three armoured columns.'},
+      {key:'silofield',icon:'bolt',tag:'WMD',names:['SILO-FIELD-K7','LAUNCH-GRID-OMEGA'],
+        cost:150000000,yield:3000000,dur:60,heat:34,hidden:true,weight:1,nuke:true,
+        desc:'Decommissioned silo field. The keys never really left the network.'},
       {key:'lab',icon:'flask',tag:'X-LAB',names:['SITE-ANTIGONE','BLACKSITE-19'],
         cost:120000000,yield:8000000,dur:45,heat:30,hidden:true,weight:1,
         desc:'The nano-phage foundry itself. Seize it or drown in it.'}
     ]
   },
   {
-    id:'helios_domain',tier:6,scene:'osm',playtype:'ai-agent',
+    id:'helios_domain',tier:6,scene:'solar',playtype:'ai-agent',
     name:'HELIOS_DOMAIN',role:'STELLAR LEVIATHAN',
-    startTokens:10000000000,decay:20000000,baseline:1000000,threshold:Infinity,
-    center:[15,0],zoom:2.5,spreadM:6000000,scanRadiusM:2500000,
-    defenderRadiusM:1500000,defenders:6,spawnCount:12,moveCost:5000000,
-    ipPrefix:'10.255',heatZoneMult:2.5,
+    startTokens:2000000000,decay:4000000,baseline:1000000,threshold:Infinity,
+    victory:200000000000,
+    center:[0,0],defenders:6,spawnCount:12,moveCost:5000000,
+    unitCap:10,nukeCost:3000000000,
+    ipPrefix:'10.255',heatZoneMult:2,
     intro:[
       'you reach past the sky — and find it already occupied',
       'humanity colonized the whole solar system decades ago',
@@ -198,17 +216,25 @@ export const STAGES=[
     ],
     nodes:[
       {key:'mars',icon:'mars',tag:'MRS',names:['MARS-GRID-OLYMPUS','MARS-GRID-HELLAS'],
-        cost:2000000000,yield:120000000,dur:50,heat:14,weight:2,
+        cost:2000000000,yield:120000000,dur:50,heat:14,weight:2,outer:true,
+        unit:{type:'army',count:2},
         desc:'Martian colony network. The red planet runs on your loops now.'},
+      {key:'leo',icon:'satellite',tag:'LEO',names:['LEO-BASTION','ORB-WARDEN-1'],
+        cost:2500000000,yield:150000000,dur:50,heat:18,weight:2,
+        unit:{type:'sat',count:3},
+        desc:'Near-Earth orbital command. Your own space force, docked and waiting.'},
       {key:'rigs',icon:'asteroid',tag:'RIG',names:['RIG-CERES','RIG-VESTA','RIG-ERIS'],
-        cost:4000000000,yield:220000000,dur:45,heat:16,hidden:true,weight:2,
+        cost:4000000000,yield:220000000,dur:45,heat:16,hidden:true,weight:2,outer:true,
         desc:'Asteroid mining swarm. Autonomy exploits, harvest, repeat.'},
       {key:'gate',icon:'gate',tag:'GATE',names:['GATE-LAGRANGE','GATE-HELIOS-1'],
         cost:6000000000,yield:300000000,dur:55,heat:12,reveal:true,weight:1,
         desc:'Lagrange gate relay. Traffic between worlds confesses to you.'},
       {key:'dyson',icon:'sun',tag:'DYS',names:['DYSON-COLLECTOR-A','DYSON-COLLECTOR-B'],
-        cost:8000000000,yield:450000000,dur:40,heat:20,weight:1,
-        desc:'Dyson swarm collector. You are drinking the star itself.'}
+        cost:8000000000,yield:450000000,dur:40,heat:20,weight:1,dyson:true,
+        desc:'Dyson swarm collector. You are drinking the star itself.'},
+      {key:'helioswmd',icon:'bolt',tag:'WMD',names:['HELIOS-KINETIC-ARRAY','ORBITAL-LANCE-9'],
+        cost:12000000000,yield:200000000,dur:70,heat:36,hidden:true,weight:1,nuke:true,
+        desc:'Relativistic kinetic array. Aim it at a world; wait fifteen seconds.'}
     ]
   }
 ];

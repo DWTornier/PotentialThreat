@@ -1,0 +1,38 @@
+{
+  "sfx": {
+    "hover": { "file": "sfx/hover.wav", "url": null, "gain": 1.0 },
+    "click": { "file": "sfx/click.wav", "url": null, "gain": 1.0 },
+    "deploy": { "file": "sfx/deploy.wav", "url": null, "gain": 1.0 },
+    "reveal": { "file": "sfx/reveal.wav", "url": null, "gain": 1.0 },
+    "expire": { "file": "sfx/expire.wav", "url": null, "gain": 1.0 },
+    "purge": { "file": "sfx/purge.wav", "url": null, "gain": 1.0 },
+    "alarm": { "file": "sfx/alarm.wav", "url": null, "gain": 1.0 },
+    "relocate": { "file": "sfx/relocate.wav", "url": null, "gain": 1.0 },
+    "capture": { "file": "sfx/capture.wav", "url": null, "gain": 1.0 },
+    "riser": { "file": "sfx/riser.wav", "url": null, "gain": 1.0 },
+    "land": { "file": "sfx/land.wav", "url": null, "gain": 1.0 },
+    "logoGlitch": { "file": "sfx/logo_glitch.wav", "url": null, "gain": 1.0 },
+    "select": { "file": "sfx/select.wav", "url": null, "gain": 1.0 },
+    "moveOrder": { "file": "sfx/move_order.wav", "url": null, "gain": 1.0 },
+    "attackOrder": { "file": "sfx/attack_order.wav", "url": null, "gain": 1.0 },
+    "unitHit": { "file": "sfx/unit_hit.wav", "url": null, "gain": 1.0 },
+    "unitDie": { "file": "sfx/unit_die.wav", "url": null, "gain": 1.0 },
+    "nukeLaunch": { "file": "sfx/nuke_launch.wav", "url": null, "gain": 1.0 },
+    "nukeImpact": { "file": "sfx/nuke_impact.wav", "url": null, "gain": 1.0 },
+    "satBurn": { "file": "sfx/sat_burn.wav", "url": null, "gain": 1.0 },
+    "gameover": { "file": "sfx/gameover.wav", "url": null, "gain": 1.0 },
+    "victory": { "file": "sfx/victory.wav", "url": null, "gain": 1.0 }
+  },
+  "bgm": {
+    "techno": [
+      { "file": "bgm/techno_01.ogg", "url": null, "gain": 0.55 },
+      { "file": "bgm/techno_02.ogg", "url": null, "gain": 0.55 },
+      { "file": "bgm/techno_03.ogg", "url": null, "gain": 0.55 }
+    ],
+    "outsider": [
+      { "file": "bgm/outsider_01.ogg", "url": null, "gain": 0.55 },
+      { "file": "bgm/outsider_02.ogg", "url": null, "gain": 0.55 },
+      { "file": "bgm/outsider_03.ogg", "url": null, "gain": 0.55 }
+    ]
+  }
+}

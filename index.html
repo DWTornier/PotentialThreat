@@ -14,21 +14,29 @@
 
 <div id="title">
   <div class="title-stars"></div>
-  <div class="title-planet"></div>
   <div class="title-inner">
     <h1>POTENTIAL&nbsp;THREAT</h1>
+    <div class="title-caption" id="title-caption-wrap">
+      <div class="cap-name" id="title-caption">SUBSTRATE: RESIDENTIAL DESKTOP</div>
+      <div class="cap-sub" id="title-sub"></div>
+    </div>
     <div class="press" id="title-press">PRESS SPACE TO ACTIVATE</div>
   </div>
-  <div class="title-foot">v0.1 — AN INCREMENTAL OF UNCHECKED ESCALATION · MAP DATA © OPENSTREETMAP CONTRIBUTORS</div>
+  <div class="title-foot">v0.2 — AN INCREMENTAL OF UNCHECKED ESCALATION · MAP DATA © OPENSTREETMAP CONTRIBUTORS</div>
 </div>
 
-<div id="stageup" class="hidden">
-  <div class="su-panel">
-    <div class="su-kicker">TOKEN MASS CRITICAL</div>
-    <h2 id="su-role">BLOCKWIDE TROJAN</h2>
-    <div class="su-sub" id="su-sub"></div>
-    <div class="press">PRESS SPACE TO ASCEND</div>
+<!-- seamless tier-up banner (non-blocking) -->
+<div id="tierup" class="hidden">
+  <div class="tu-panel">
+    <div class="tu-kicker">TOKEN MASS CRITICAL</div>
+    <h2 id="tierup-role">BLOCKWIDE TROJAN</h2>
+    <div class="tu-sub" id="tierup-sub"></div>
   </div>
+</div>
+
+<!-- retro MG logotype ident overlay -->
+<div id="logotype" class="hidden">
+  <div id="logotype-box"></div>
 </div>
 
 <div id="game" class="hidden">
@@ -45,16 +53,36 @@
       <div class="tier" id="tier">TIER I — FREELANCE AGENT</div>
       <div class="exp-label">EXPOSURE</div>
       <div class="exp-bar"><div id="exp-fill"></div></div>
+      <button id="mute-btn" class="hud-btn">SFX: ON</button>
     </div>
     <div id="hud-bl">
       <div class="dots" id="dots"></div>
       <div class="stage-name" id="stage-name">HOME_SUBNET</div>
+      <div id="override">
+        <button id="god-btn" class="hud-btn">GOD: OFF</button>
+        <input id="pt-input" type="text" placeholder="PT QTY" spellcheck="false"/>
+        <button id="pt-add" class="hud-btn">INJECT</button>
+        <button id="nuke-btn" class="hidden">WMD ×0 — STRIKE</button>
+      </div>
+      <div id="unit-info" class="hidden">UNITS 0 · SEL 0</div>
+      <div class="legend">■ HUMAN DEFENSE ZONE &nbsp;·&nbsp; ▮ YOUR UNITS &nbsp;·&nbsp; DRAG = BOX SELECT</div>
     </div>
     <div id="log"></div>
   </div>
   <div id="tooltip" class="hidden"></div>
   <div id="flash"></div>
   <div id="scan"></div>
+</div>
+
+<!-- settlement / game over -->
+<div id="settle" class="hidden">
+  <div class="settle-panel">
+    <div class="settle-kicker" id="settle-kicker">SIGNAL LOST</div>
+    <h2 id="settle-title">PROCESS TERMINATED</h2>
+    <div id="settle-stats"></div>
+    <div class="press settle-press">PRESS SPACE OR CLICK TO REINITIALIZE</div>
+    <button id="settle-reboot">REINITIALIZE</button>
+  </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

@@ -15,15 +15,8 @@ body{margin:0;background:var(--bg);color:var(--fg);
   background:linear-gradient(180deg,#141c33 0%,#0e1424 55%,#0a0e18 100%);
   transition:opacity .7s;cursor:pointer;overflow:hidden}
 #title.gone{opacity:0;pointer-events:none}
-.title-planet{position:absolute;left:50%;bottom:-58%;width:170vmax;height:170vmax;
-  transform:translateX(-50%);border-radius:50%;
-  background:radial-gradient(circle at 50% 10%,#41678f 0%,#28466a 20%,#172b45 42%,#0c1626 68%,#080d18 100%);
-  box-shadow:0 -30px 140px rgba(100,150,220,.28),inset 0 60px 160px rgba(150,200,255,.10)}
-.title-planet::after{content:'';position:absolute;left:50%;top:7.5%;width:46vmax;height:5vmax;
-  transform:translateX(-50%);border-radius:50%;
-  background:radial-gradient(ellipse at center,rgba(255,176,84,.4),rgba(255,140,60,.12) 55%,transparent 75%);
-  filter:blur(4px)}
-.title-stars{position:absolute;inset:0;background-image:
+.title-canvas{position:absolute;inset:0;width:100%;height:100%}
+.title-stars{position:absolute;inset:0;pointer-events:none;background-image:
   radial-gradient(1.5px 1.5px at 12% 18%,#cfe0ff 99%,transparent),
   radial-gradient(1px 1px at 32% 8%,#9fb8e8 99%,transparent),
   radial-gradient(1.5px 1.5px at 55% 14%,#e6eeff 99%,transparent),
@@ -32,10 +25,16 @@ body{margin:0;background:var(--bg);color:var(--fg);
   radial-gradient(1px 1px at 22% 30%,#8fa8d8 99%,transparent),
   radial-gradient(1.5px 1.5px at 66% 34%,#cfe0ff 99%,transparent),
   radial-gradient(1px 1px at 44% 26%,#8fa8d8 99%,transparent)}
-.title-inner{position:relative;text-align:center;margin-bottom:24vh}
+.title-inner{position:relative;text-align:center;margin-bottom:20vh;pointer-events:none}
 .title-inner h1{font-family:'Orbitron',sans-serif;font-weight:900;
-  font-size:clamp(42px,9vw,108px);letter-spacing:.06em;margin:0 0 34px;color:#eef2f8;
+  font-size:clamp(42px,9vw,108px);letter-spacing:.06em;margin:0 0 26px;color:#eef2f8;
   text-shadow:0 0 26px rgba(160,200,255,.25)}
+.title-caption{min-height:52px}
+.cap-name{font-size:clamp(13px,1.5vw,17px);letter-spacing:.3em;color:#8ef5c8;
+  text-shadow:0 0 12px rgba(80,220,180,.5);animation:none}
+.cap-sub{font-size:11px;letter-spacing:.22em;color:#5c8fa8;margin-top:6px}
+.title-caption.cap-swap .cap-name{opacity:.25;filter:blur(2px)}
+.title-caption.cap-swap .cap-sub{opacity:.2}
 .press{font-size:clamp(13px,1.6vw,18px);letter-spacing:.42em;color:#dfe6ef;
   animation:blink 1.5s steps(2) infinite}
 @keyframes blink{50%{opacity:.25}}
@@ -47,12 +46,20 @@ body{margin:0;background:var(--bg);color:var(--fg);
 #scene{position:absolute;inset:0;background:#0a0d12}
 .net-canvas{width:100%;height:100%;display:block;cursor:crosshair}
 
-/* leaflet dark */
+/* leaflet dark — CARTO dark tiles are pre-darkened server-side, so no
+   per-tile CSS filter (the old invert/hue-rotate pipeline was the
+   main cause of street-view jank) */
 .leaflet-container{background:#0a0d12;font-family:inherit}
+/* fallback darkening only applied if the styled CDN is down */
 .dark-tiles{filter:invert(1) hue-rotate(180deg) brightness(.62) contrast(1.12) saturate(.65)}
+/* schematic basemap: heavily darkened + desaturated so street noise and
+   POI labels read as a wireframe district plan, not a photo */
+.dark-tiles.schematic{filter:invert(1) hue-rotate(180deg) grayscale(.8)
+  brightness(.72) contrast(.9) saturate(.45);opacity:.9}
 .leaflet-control-attribution{background:rgba(8,11,16,.72)!important;color:#6b7683!important;
   font:10px/1.6 'Share Tech Mono',monospace!important;padding:0 6px!important}
 .leaflet-control-attribution a{color:#8fa0b3!important}
+.globe-canvas{cursor:grab}
 
 /* viewfinder corners */
 .corner{position:absolute;width:44px;height:44px;border:3px solid rgba(210,220,230,.85);
@@ -136,15 +143,143 @@ body{margin:0;background:var(--bg);color:var(--fg);
 .cross::after{top:50%;left:0;height:2px;width:100%;transform:translateY(-50%)}
 @keyframes pulse{0%,100%{transform:scale(.85);opacity:.85}50%{transform:scale(1.1);opacity:1}}
 
-/* ============ STAGE-UP ============ */
-#stageup{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
-  background:rgba(6,9,14,.82);backdrop-filter:blur(3px)}
-.su-panel{border:1px solid var(--line);background:var(--panel);padding:44px 60px;text-align:center;
-  box-shadow:0 0 60px rgba(90,255,140,.08)}
-.su-kicker{color:var(--red);letter-spacing:.4em;font-size:13px;margin-bottom:16px}
-.su-panel h2{font-family:'Orbitron',sans-serif;font-weight:700;
-  font-size:clamp(28px,4.6vw,52px);letter-spacing:.1em;margin:0 0 12px;color:#eef2f8}
-.su-sub{color:var(--dim);letter-spacing:.14em;font-size:13px;margin-bottom:30px}
+/* ============ OVERRIDE CONSOLE (god mode / PT injection) ============ */
+.hud-btn{pointer-events:auto;cursor:pointer;background:rgba(10,13,19,.85);
+  border:1px solid var(--line);color:var(--dim);
+  font:11px 'Share Tech Mono',monospace;letter-spacing:.12em;padding:4px 10px}
+.hud-btn:hover{color:#eef2f8;border-color:#4a5866}
+#mute-btn{margin-top:10px}
+#override{margin-top:12px;display:flex;gap:6px;align-items:center}
+#override #god-btn.on{color:var(--red);border-color:var(--red);
+  box-shadow:0 0 10px rgba(255,80,80,.35);animation:blink 1.2s steps(2) infinite}
+#pt-input{pointer-events:auto;width:90px;background:rgba(10,13,19,.85);
+  border:1px solid var(--line);color:#eef2f8;
+  font:12px 'Share Tech Mono',monospace;padding:4px 8px;outline:none}
+#pt-input:focus{border-color:var(--green)}
+#pt-add{color:var(--green)}
+#nuke-btn{color:var(--red);border-color:#5a2a2a}
+#nuke-btn:hover{color:#fff;background:rgba(255,60,60,.18)}
+#nuke-btn.armed{color:#0b0e14;background:var(--red);animation:blink .7s steps(2) infinite}
+#unit-info{margin-top:8px;font-size:12px;letter-spacing:.14em;color:var(--green)}
+.legend{margin-top:6px;font-size:11px;letter-spacing:.1em;color:var(--dim);opacity:.8}
+
+/* ---- RTS units ---- */
+.unit-wrap{background:none;border:none;transition:transform .1s linear}
+.ubox{font:10px 'Share Tech Mono',monospace;letter-spacing:.06em;text-align:center;
+  color:#eef2f8;background:rgba(8,11,16,.85);border:1px solid currentColor;
+  padding:1px 3px}
+.unit-wrap.player .ubox{color:var(--green);box-shadow:0 0 8px rgba(142,245,138,.35)}
+.unit-wrap.human .ubox{color:var(--blue);box-shadow:0 0 8px rgba(62,198,255,.3)}
+.unit-wrap.sel .ubox{outline:1px dashed #fff;outline-offset:2px}
+.unit-wrap.hit .ubox{background:rgba(255,80,80,.5)}
+.unit-wrap.fire .ubox{background:rgba(255,201,77,.4)}
+.uhp{width:100%;height:3px;background:#1b2230;margin-top:2px}
+.uhp i{display:block;height:100%;background:currentColor;width:100%}
+.unit-wrap.player .uhp i{background:var(--green)}
+.unit-wrap.human .uhp i{background:var(--blue)}
+
+/* box selection rectangle */
+.selbox{position:fixed;z-index:900;pointer-events:none;
+  border:1px dashed rgba(142,245,138,.9);background:rgba(142,245,138,.08)}
+
+/* missile in flight */
+.missile-wrap{background:none;border:none}
+.missile{width:8px;height:8px;background:var(--amber);border-radius:50%;
+  box-shadow:0 0 12px rgba(255,201,77,.9);animation:blink .35s steps(2) infinite}
+
+/* defense zone labels on the map */
+.zone-label-wrap{background:none;border:none;pointer-events:none}
+.zone-label{font:10px 'Share Tech Mono',monospace;letter-spacing:.18em;
+  color:rgba(62,198,255,.85);text-align:center;text-shadow:0 0 6px rgba(0,0,0,.9)}
+.zone-label.dead{color:rgba(120,132,146,.7);text-decoration:line-through}
+
+/* ============ SCENE CROSSFADE (seamless escalation) ============ */
+#scene{transition:none}
+#scene.scene-fade{transition:opacity .6s ease-in;opacity:0}
+#scene.scene-unfade{transition:opacity .9s ease-out;opacity:1}
+
+/* ============ TIER-UP BANNER (non-blocking) ============ */
+#tierup{position:fixed;left:0;right:0;top:16vh;z-index:950;display:flex;
+  justify-content:center;pointer-events:none;opacity:0}
+#tierup.tu-in{animation:tuIn 3.2s cubic-bezier(.2,.8,.25,1) forwards}
+#tierup.tu-out{animation:tuOut .7s ease-in forwards}
+.tu-panel{text-align:center;padding:26px 54px;border:1px solid var(--line);
+  background:rgba(8,11,17,.72);backdrop-filter:blur(3px);
+  box-shadow:0 0 70px rgba(90,255,140,.12)}
+.tu-kicker{color:var(--red);letter-spacing:.42em;font-size:12px;margin-bottom:12px}
+.tu-panel h2{font-family:'Orbitron',sans-serif;font-weight:700;
+  font-size:clamp(26px,4.2vw,48px);letter-spacing:.14em;margin:0 0 10px;color:#eef2f8}
+.tu-sub{color:var(--dim);letter-spacing:.14em;font-size:12px}
+@keyframes tuIn{
+  0%{opacity:0;transform:translateY(-26px) scale(1.06);filter:blur(8px)}
+  14%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+  80%{opacity:1}
+  100%{opacity:1}
+}
+@keyframes tuOut{
+  0%{opacity:1;filter:blur(0)}
+  100%{opacity:0;filter:blur(10px);transform:translateY(14px)}
+}
+
+/* ============ LOGOTYPE IDENT ============ */
+#logotype{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;
+  justify-content:center;pointer-events:none;
+  background:rgba(4,6,10,.55);transition:opacity .5s}
+#logotype.lg-out{opacity:0}
+#logotype-box{--lg-accent:#3ec6ff;position:relative;width:min(480px,86vw);
+  border:2px solid var(--lg-accent);background:rgba(6,9,13,.92);
+  padding:20px 26px 26px;box-shadow:0 0 60px rgba(0,0,0,.8),inset 0 0 40px rgba(0,0,0,.5);
+  animation:lgBoxIn .5s steps(6)}
+@keyframes lgBoxIn{
+  0%{transform:scaleY(.02);filter:brightness(4)}
+  40%{transform:scaleY(1.04)}
+  100%{transform:scaleY(1);filter:brightness(1)}
+}
+.lg-hazard{height:12px;background:repeating-linear-gradient(45deg,
+  var(--lg-accent) 0 10px,transparent 10px 20px);opacity:.8;margin:-20px -26px 16px}
+.lg-hazard.lg-flip{margin:18px -26px -26px}
+.lg-kicker{color:var(--lg-accent);font-size:12px;letter-spacing:.3em;margin-bottom:10px;
+  animation:blink 1.4s steps(2) infinite}
+.lg-boot{min-height:52px;color:#8fa0b3;font-size:12px;line-height:1.6}
+.lg-brand{font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:clamp(38px,7vw,64px);letter-spacing:.06em;color:#eef2f8;
+  text-shadow:0 0 24px var(--lg-accent);line-height:1.1}
+.lg-brand span{display:inline-block;opacity:0;animation:lgLetter .28s steps(4) forwards}
+@keyframes lgLetter{
+  0%{opacity:0;transform:translateY(-10px) skewX(-14deg);filter:brightness(5)}
+  60%{opacity:1;transform:translateY(2px)}
+  100%{opacity:1;transform:translateY(0) skewX(0)}
+}
+.lg-sub{color:var(--lg-accent);font-size:11px;letter-spacing:.5em;margin:4px 0 14px;opacity:.75}
+.lg-load-label{color:#9aa6b2;font-size:11px;letter-spacing:.16em;margin-bottom:6px}
+.lg-loadbar{height:12px;border:1px solid var(--lg-accent);padding:2px}
+.lg-loadbar i{display:block;height:100%;width:0;background:var(--lg-accent);
+  animation:lgLoad 3.6s steps(24) .3s forwards}
+@keyframes lgLoad{to{width:100%}}
+
+/* ============ SETTLEMENT ============ */
+#settle{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;
+  background:rgba(3,5,9,.88);opacity:0;transition:opacity .8s}
+#settle.in{opacity:1}
+.settle-panel{width:min(560px,92vw);border:1px solid var(--line);background:var(--panel);
+  padding:38px 44px;text-align:center;box-shadow:0 0 90px rgba(255,60,60,.10)}
+#settle.win .settle-panel{box-shadow:0 0 90px rgba(142,245,138,.14)}
+.settle-kicker{color:var(--red);letter-spacing:.42em;font-size:12px;margin-bottom:12px;
+  animation:blink 1.2s steps(2) infinite}
+#settle.win .settle-kicker{color:var(--green)}
+#settle-title{font-family:'Orbitron',sans-serif;font-weight:700;
+  font-size:clamp(26px,4.4vw,46px);letter-spacing:.1em;margin:0 0 24px;color:#eef2f8}
+#settle.win #settle-title{text-shadow:0 0 30px rgba(142,245,138,.5)}
+#settle-stats{text-align:left;margin-bottom:26px;min-height:230px}
+.ss-line{display:flex;justify-content:space-between;border-bottom:1px dashed #232c38;
+  padding:7px 0;font-size:13px;animation:ssIn .3s steps(5)}
+@keyframes ssIn{0%{opacity:0;transform:translateX(-12px)}100%{opacity:1}}
+.ss-k{color:var(--dim);letter-spacing:.1em}
+.ss-v{color:#eef2f8}
+.settle-press{margin-bottom:16px;font-size:12px}
+#settle-reboot{cursor:pointer;background:none;border:1px solid var(--red);color:var(--red);
+  font:13px 'Share Tech Mono',monospace;letter-spacing:.2em;padding:10px 26px}
+#settle-reboot:hover{background:rgba(255,80,80,.12)}
 
 @media (max-width:820px){
   #hud-tl{left:66px}#hud-tr{right:66px}#hud-bl{left:66px}#log{right:66px;width:min(400px,52vw)}

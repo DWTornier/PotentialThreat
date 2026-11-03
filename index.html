@@ -13,11 +13,13 @@
 <body>
 
 <div id="title">
+  <!-- cutscene render surface: a sequence appends its canvas / WebGL / DOM here -->
+  <div id="title-stage"></div>
   <div class="title-stars"></div>
   <div class="title-inner">
     <h1>POTENTIAL&nbsp;THREAT</h1>
     <div class="title-caption" id="title-caption-wrap">
-      <div class="cap-name" id="title-caption">SUBSTRATE: RESIDENTIAL DESKTOP</div>
+      <div class="cap-name" id="title-caption"></div>
       <div class="cap-sub" id="title-sub"></div>
     </div>
     <div class="press" id="title-press">PRESS SPACE TO ACTIVATE</div>
@@ -84,6 +86,11 @@
     <button id="settle-reboot">REINITIALIZE</button>
   </div>
 </div>
+
+<!-- OPTIONAL DROP-IN CUTSCENE (executes before the game boots):
+     a module that calls window.PotentialThreatIntro.register('my-3d', factory).
+     Then open index.html?intro=my-3d — no core file needs editing. -->
+<!-- <script type="module" src="src/title/sequences/my-3d.js"></script> -->
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module" src="src/main.js"></script>

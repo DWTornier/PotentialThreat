@@ -94,5 +94,10 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module" src="src/main.js"></script>
+
+<!-- TornierService v1: framework lives in THIS repo, not in the host site.
+     Same-origin endpoint works on tornier.io; set data-endpoint to report elsewhere. -->
+<script src="./service/tornier-service.js" data-service="potential-threat" defer></script>
+<script src="./service/metrics.js" defer></script>
 </body>
 </html>
